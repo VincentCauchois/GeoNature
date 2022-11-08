@@ -39,8 +39,8 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
-                "output": "./assets/"
-              }
+                "output": "."
+             }
             ],
             "styles": [
               "node_modules/primeng/resources/themes/nova/theme.css",
