@@ -15,4 +15,5 @@ class ContextTask(app.Task):
 
 app.Task = ContextTask
 
+app.conf.imports += ("geonature.tasks",)
 app.conf.imports += tuple(ep.module_name for ep in iter_entry_points("gn_module", "tasks"))
