@@ -235,11 +235,12 @@ def post_jdd_from_user(id_user=None):
 
             #  set validable = true
             ds["validable"] = True
-            dataset = TDatasets(**ds)
+            #dataset = TDatasets(**ds)
             # if the dataset already exist
             if id_dataset:
                 # delete cor_ds_actor
-                dataset.id_dataset = id_dataset
+                pass
+                '''dataset.id_dataset = id_dataset
 
                 delete_q = CorDatasetActor.__table__.delete().where(
                     CorDatasetActor.id_dataset == id_dataset
@@ -250,10 +251,11 @@ def post_jdd_from_user(id_user=None):
                 # create the correlation links
                 create_cor_object_actors(actors, dataset)
                 add_dataset_module(dataset)
-                DB.session.merge(dataset)
+                DB.session.merge(dataset)'''
 
             # its a new DS
             else:
+                dataset = TDatasets(**ds)
                 # set the dataset as activ
                 dataset.active = True
                 # create the correlation links
