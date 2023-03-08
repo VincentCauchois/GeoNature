@@ -80,7 +80,7 @@ def info():
 @routes.cli.command()
 @click.option("--source-name", required=True)
 @click.option("--csvfile", required=True)
-@click.option("--url", help="Le fichier ou l’archive est à télécharger")
+@click.option("--url", help="Le fichier où l’archive est à télécharger")
 @click.option("--zipfile", help="Le fichier CSV est contenu dans une archive")
 @click.option("--encoding")
 def add_referential(source_name, csvfile, url, zipfile, encoding):

@@ -241,7 +241,7 @@ class TestSynthese:
 
         # le résultat doit être supérieur ou égal à 2
         assert len(data["features"]) != 0
-        # le requete doit etre OK marlgré la geom NULL
+        # le requete doit etre OK malgré la geom NULL
         assert response.status_code == 200
 
     def test_export(self, users):
