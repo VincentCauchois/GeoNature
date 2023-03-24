@@ -86,6 +86,7 @@ def insert_sensitivity_referential(source, csvfile):
         for criteria in _criterias:
             criterias.add((len(rules), criteria))
         rules.append(rule)
+        ## QUESTION VINCENT : What if there are two identical rules, two similar rows in the source csvfile ? --> Shouldn't 'rules' be a set rather than a list ?
     results = db.session.execute(
         sa.insert(SensitivityRule).values(rules).returning(SensitivityRule.id)
     )
@@ -95,6 +96,7 @@ def insert_sensitivity_referential(source, csvfile):
             [
                 {
                     "id_sensitivity": rules_indexes[rule_idx],
+                    ## QUESTION VINCENT : is 'rule_idx' different from 'rules_indexes[rule_idx]', and if so shouldn't 'rules_indexes' be renamed into 'sensitivity_ids'
                     "id_type_nomenclature": nomenclature.id_type,
                     "id_criteria": nomenclature.id_nomenclature,
                 }
@@ -117,6 +119,7 @@ def insert_sensitivity_referential(source, csvfile):
             AND regexp_replace(s.id_territory, '^([0-9])$', '0\\1') = a.area_code
         WHERE s.source = :source
     """
+            ## QUESTION VINCENT : La ligne ci-dessous avec ':source' permet-elle de récupérer la variable Python 'source' dans la requête SQL ?
         ),
         source=source,
     )
