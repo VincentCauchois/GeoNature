@@ -455,6 +455,7 @@ class SyntheseQuery:
 
     def apply_all_filters(self, user, scope):
         self.filter_query_with_cruved(user, scope)
+        ## QUESTION VINCENT : Que font les filtres filter_taxonomy() et filer_other_filters() ?
         self.filter_taxonomy()
         self.filter_other_filters()
         self.transform_to_areas()
