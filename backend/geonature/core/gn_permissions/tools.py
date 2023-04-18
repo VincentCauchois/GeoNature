@@ -88,6 +88,7 @@ def _get_user_permissions(id_role):
     default_object = TObjects.query.filter_by(code_object="ALL").one()
     return (
         CorRoleActionFilterModuleObject.query.options(
+            ## QUESTION VINCENT : que fait joinedload ?
             joinedload(CorRoleActionFilterModuleObject.action),
             joinedload(CorRoleActionFilterModuleObject.filter).joinedload(TFilters.filter_type),
         )
