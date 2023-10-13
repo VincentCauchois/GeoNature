@@ -228,7 +228,7 @@ def build_allowed_geom_cte(
         )
     ).limit(limit)
 
-    return precise_geom_query.union(blurred_geom_query).cte("allowed_geom")
+    return precise_geom_query.union(blurred_geom_query).limit(limit).cte("allowed_geom")
 
 
 def build_synthese_obs_query(observations, allowed_geom_cte, limit):
