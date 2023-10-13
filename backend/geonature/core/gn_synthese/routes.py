@@ -295,6 +295,8 @@ def get_observations_for_web(permissions):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
+    import logging
+    logging.info('\n\n Start of get_observations_for_web\n\n')
     filters = request.json if request.is_json else {}
     if type(filters) != dict:
         raise BadRequest("Bad filters")
@@ -431,7 +433,14 @@ def get_observations_for_web(permissions):
         )
         query = select([obs_query.c.geojson, grouped_properties]).group_by(obs_query.c.geojson)
 
+    logging.info(f'\n\n print query : \n\n{query}\n\n')
+    from geonature.utils.literalquery import literalquery
+    logging.info(f'\n\n print literal query : \n\n{literalquery(query)}\n\n')
+    logging.info(f'\n\n g.current_user : {g.current_user}\n\n')
+    logging.info(f'\n\n result_limit : {result_limit}n\n')
+    logging.info('\n\n test logging before synthese query execution\n\n')
     results = DB.session.execute(query)
+    logging.info('\n\n test logging after synthese query execution\n\n')
 
     # Build final GeoJson
     geojson_features = []
@@ -442,6 +451,7 @@ def get_observations_for_web(permissions):
                 properties=properties,
             )
         )
+    logging.info('\n\n End of get_observations_for_web\n\n')
     return jsonify(FeatureCollection(geojson_features))
 
 
