@@ -134,15 +134,16 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def build_permissions_filter(self, user, permissions):
+    def build_permissions_filter(self, user, permissions, result_limit=50000):
         """
         Return a where clause for the given permissions set
         """
-        subquery_observers = (
+        list_id_synthese_observed_by_user = [row[0] for row in DB.session.execute(
             select([CorObserverSynthese.id_synthese])
             .select_from(CorObserverSynthese)
             .where(CorObserverSynthese.id_role == user.id_role)
-        )
+            .limit(result_limit)
+        ).fetchall()]
         datasets_by_scope = {}  # to avoid fetching datasets several time for same scope
         permissions_filters = []
         non_diffusion = None
@@ -172,7 +173,7 @@ class SyntheseQuery:
                     ]
                 datasets = datasets_by_scope[perm.scope_value]
                 scope_filters = [
-                    self.model_id_syn_col.in_(subquery_observers),  # user is observer
+                    self.model_id_syn_col.in_(list_id_synthese_observed_by_user),  # user is observer
                     self.model_id_digitiser_column == user.id_role,  # user id digitizer
                     self.model_id_dataset_column.in_(
                         datasets
@@ -188,11 +189,11 @@ class SyntheseQuery:
         else:
             return sa.false()
 
-    def filter_query_with_permissions(self, user, permissions):
+    def filter_query_with_permissions(self, user, permissions, result_limit=50000):
         """
         Filter the query with the permissions of a user
         """
-        where_clause = self.build_permissions_filter(user=user, permissions=permissions)
+        where_clause = self.build_permissions_filter(user=user, permissions=permissions, result_limit=result_limit)
         self.query = self.query.where(where_clause)
 
     def filter_query_with_cruved(self, user, scope):
@@ -201,11 +202,11 @@ class SyntheseQuery:
         """
         if scope in (1, 2):
             # get id synthese where user is observer
-            subquery_observers = (
+            subquery_observers = [row[0] for row in DB.session.execute(
                 select([CorObserverSynthese.id_synthese])
                 .select_from(CorObserverSynthese)
                 .where(CorObserverSynthese.id_role == user.id_role)
-            )
+            ).fetchall()]
             ors_filters = [
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
@@ -495,11 +496,11 @@ class SyntheseQuery:
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value)))
 
-    def apply_all_filters(self, user, permissions):
+    def apply_all_filters(self, user, permissions, result_limit=50000):
         if type(permissions) == int:  # scope
             self.filter_query_with_cruved(user, scope=permissions)
         else:
-            self.filter_query_with_permissions(user, permissions)
+            self.filter_query_with_permissions(user, permissions, result_limit)
         self.filter_taxonomy()
         self.filter_other_filters(user)
 

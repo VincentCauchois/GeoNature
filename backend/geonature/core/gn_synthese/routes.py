@@ -204,10 +204,10 @@ def build_allowed_geom_cte(
 
     # Note: the used query is not important here, as it is only used to select the right Synthese model
     precise_perms_filter = precise_geom_query.build_permissions_filter(
-        g.current_user, precise_permissions
+        g.current_user, precise_permissions, result_limit=limit
     )
     blurring_perms_filter = precise_geom_query.build_permissions_filter(
-        g.current_user, blurring_permissions
+        g.current_user, blurring_permissions, result_limit=limit
     )
 
     # Access precise geom for obs with precise perm and for unsensitive obs with blurring perm
