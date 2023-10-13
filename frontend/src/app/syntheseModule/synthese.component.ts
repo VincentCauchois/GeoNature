@@ -49,6 +49,7 @@ export class SyntheseComponent implements OnInit {
           ? 'grouped_geom_by_areas'
           : 'grouped_geom'
       );
+    this._fs.searchForm.patchValue({ limit: null });
     this._route.queryParamMap.subscribe((params) => {
       if (params.get('id_dataset')) {
         this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
@@ -178,8 +179,11 @@ export class SyntheseComponent implements OnInit {
     }
   }
   onSearchEvent() {
-    // remove limit
-    this._fs.selectors = this._fs.selectors.delete('limit');
+    // if 'limit' is specified in form, set the new value in selectors
+    // set a variable limit to this._fs.searchForm.value.limit if it exists else 50000
+    const limit = this._fs.searchForm.value.limit ? this._fs.searchForm.value.limit : 50000;
+    this._fs.selectors = this._fs.selectors.set('limit', limit);
+    this._fs.searchForm.patchValue({ limit: limit });
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;

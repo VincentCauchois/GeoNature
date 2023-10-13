@@ -353,6 +353,29 @@
     >
     </pnx-dynamic-form-generator>
   </fieldset>
+
+  <fieldset>
+    <legend>Combien ?</legend>
+
+    <legend>{{ 'Limite' }}</legend>
+    <input
+      data-qa="synthese-form-limit"
+      class="form-control form-control-sm"
+      type="number"
+      min="0"
+      [ngClass]="{ 'is-invalid': formService.searchForm.hasError('invalidLimit') }"
+      [formControl]="formService.searchForm.controls.limit"
+    />
+    <small
+      *ngIf="
+        formService.searchForm.get('limit').invalid && formService.searchForm.get('limit').touched
+      "
+      class="error"
+      style="color: rgb(18, 32, 155)"
+    >
+      {{ 'Synthese.LimitError' | translate }}
+    </small>
+  </fieldset>
 </div>
 
 <div class="search-btn">

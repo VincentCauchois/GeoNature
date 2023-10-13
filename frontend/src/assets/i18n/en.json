@@ -197,6 +197,7 @@
   },
   "Synthese": {
     "DeleteObs": "Delete this observation",
+    "LimitError": "The 'Limit' field must be a positive integer.",
     "Map": {
       "AreasToggleBtn": "Areas"
     }

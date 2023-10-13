@@ -4,6 +4,7 @@ import {
   UntypedFormBuilder,
   UntypedFormControl,
   ValidatorFn,
+  Validators,
 } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
 
@@ -89,6 +90,7 @@ export class SyntheseFormService {
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
       taxon_rank: null,
+      limit: [null, [Validators.required, Validators.pattern('[0-9]+')]],
     });
 
     this.searchForm.setValidators([this.periodValidator()]);

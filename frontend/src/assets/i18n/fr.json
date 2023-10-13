@@ -215,6 +215,7 @@
     "DeleteObs": "Supprimer l'observations",
     "DeleteSuccess": "Observation supprimée avec succès",
     "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période",
+    "LimitError": "Le champs 'Limite' doit être un nombre entier positif",
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
     "Owner": "Observation de",
