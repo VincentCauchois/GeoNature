@@ -112,7 +112,10 @@ def build_blurred_precise_geom_queries(filters, where_clauses: list = []):
     # Build 2 queries that will be UNIONed
     # The where_clauses list enables to add more conditions to the base query
     # Used in export query
-    where_clauses.append(Synthese.the_geom_4326.isnot(None))
+    where_clauses_1 = where_clauses.copy()
+    where_clauses_1.append(Synthese.the_geom_4326.isnot(None))
+    where_clauses_2 = where_clauses.copy()
+    where_clauses_2.append(Synthese.the_geom_4326_blurred.isnot(None))
 
     # Query precise geom, for use with unsensitive observations
     # and sensitive observations with precise permission
@@ -125,7 +128,7 @@ def build_blurred_precise_geom_queries(filters, where_clauses: list = []):
                 Synthese.the_geom_4326.label("geom"),
             ]
         )
-        .where(sa.and_(*where_clauses))
+        .where(sa.and_(*where_clauses_1))
         .order_by(Synthese.id_synthese.desc()),
         filters=dict(filters),  # not to edit the actual filter object
     )
@@ -137,14 +140,17 @@ def build_blurred_precise_geom_queries(filters, where_clauses: list = []):
     precise_geom_query.build_query()
 
     # Query blurred geom, for use with sensitive observations
+    """
     CorAreaSyntheseAlias = aliased(CorAreaSynthese)
     geom = LAreas.geom.st_transform(4326).label("geom")
+    """
     # In SyntheseQuery below :
     # - query_joins parameter is needed to bypass
     #   "self.query_joins is not None" condition in the build_query() method below
     # - priority is used to prevail non blurred geom over blurred geom if the user
     #   can access to the non blurred geom
     # - orderby needed to match the non blurred and the blurred observations
+    """
     areas_srid = DB.session.execute(func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
     blurred_geom_query = SyntheseQuery(
         Synthese,
@@ -170,7 +176,9 @@ def build_blurred_precise_geom_queries(filters, where_clauses: list = []):
         geom_column=LAreas.geom,
         geom_column_srid=areas_srid,
     )
+    """
     # Joins here are needed to retrieve the blurred geometry
+    """
     blurred_geom_query.add_join(LAreas, LAreas.id_area, CorAreaSyntheseAlias.id_area)
     blurred_geom_query.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
     blurred_geom_query.add_join(
@@ -178,6 +186,31 @@ def build_blurred_precise_geom_queries(filters, where_clauses: list = []):
         cor_sensitivity_area_type.c.id_area_type,
         BibAreasTypes.id_type,
     )
+    """
+    # Same for the first query => apply filter to avoid querying the whole table
+    blurred_geom_query = SyntheseQuery(
+        Synthese,
+        select(
+            [
+                sa.literal(2).label("priority"),
+                Synthese.id_synthese.label("id_synthese"),
+                Synthese.the_geom_4326_blurred.label("geom"),
+            ]
+        )
+        .where(sa.and_(*where_clauses_2))
+        .order_by(Synthese.id_synthese.desc()),
+        filters=dict(filters),  # not to edit the actual filter object
+    )
+    # Joins here are needed to retrieve the blurred geometry
+    """
+    blurred_geom_query.add_join(LAreas, LAreas.id_area, CorAreaSyntheseAlias.id_area)
+    blurred_geom_query.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
+    blurred_geom_query.add_join(
+        cor_sensitivity_area_type,
+        cor_sensitivity_area_type.c.id_area_type,
+        BibAreasTypes.id_type,
+    )
+    """
     # Same for the first query => apply filter to avoid querying the whole table
     blurred_geom_query.filter_taxonomy()
     blurred_geom_query.filter_other_filters(g.current_user)
