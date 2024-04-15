@@ -100,9 +100,7 @@ class MTDInstanceApi:
         list
             A list of acquisition frameworks for the user.
         """
-        af_list = []
         url = urljoin(self.api_endpoint, self.af_user_path).format(ID_ROLE=self.id_role)
-
         try:
             xml = self._get_xml_by_url(url)
         except requests.HttpError as http_error:
@@ -111,7 +109,7 @@ class MTDInstanceApi:
             if error_code == 404:
                 warning_message = f"""{warning_message} > Probably no acquisition framework found for the user with ID '{self.id_role}'"""
             logger.warning(warning_message)
-            return af_list
+            return []
         _xml_parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
         root = etree.fromstring(xml, parser=_xml_parser)
         af_iter = root.findall(".//{http://inpn.mnhn.fr/mtd}CadreAcquisition")
