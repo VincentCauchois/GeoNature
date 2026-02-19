@@ -1685,23 +1685,25 @@ class TestSynthese:
         assert response_empty.json == 0
 
     def test_get_observation_count(self, synthese_data, users):
-        nb_observations = len(synthese_data)
+        nb_observations_synthese = len(synthese_data)
         set_logged_user(self.client, users["admin_user"])
 
         response = self.client.get(url_for("gn_synthese.synthese_statistics.get_observation_count"))
 
-        assert response.json >= nb_observations
+        assert response.json >= nb_observations_synthese
 
     def test_get_observation_count_id_dataset(self, synthese_data, users, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        nb_observations = len([s for s in synthese_data.values() if s.id_dataset == id_dataset])
+        nb_observations_synthese = len(
+            [s for s in synthese_data.values() if s.id_dataset == id_dataset]
+        )
         url = "gn_synthese.synthese_statistics.get_observation_count"
         set_logged_user(self.client, users["self_user"])
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
 
-        assert response.json == nb_observations
+        assert response.json == nb_observations_synthese
         assert response_empty.json == 0
 
     def test_get_bbox(self, synthese_data, users):

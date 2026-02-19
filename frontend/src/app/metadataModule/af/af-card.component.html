@@ -97,7 +97,7 @@
       </div>
     </div>
 
-    <!-- Nombre d'observation -->
+    <!-- Nombre d'observations -->
     <div class="col-3">
       <div class="card">
         <div class="card-body">
@@ -110,316 +110,339 @@
               <span class="number">{{ stats.nb_observations }}</span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre de taxons -->
-    <div
-      *ngIf="stats.nb_taxons"
-      class="col-3"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/Taxon_icon.svg" />
-            <div class="label">
-              <h5>Taxons</h5>
-            </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_taxons }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Nombre d'habitats -->
-    <div
-      *ngIf="stats.nb_habitats"
-      class="col-3"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="statistic-card">
-            <img src="./assets/images/Habitat_icon.svg" />
-            <div class="label">
-              <h5>Habitats</h5>
-            </div>
-            <div class="number-div">
-              <span class="number">{{ stats.nb_habitats }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
-      <div class="card">
-        <div class="card-header">
-          <h5>Fiche descriptive</h5>
-        </div>
-        <div class="card-body">
-          <div class="b">Identification</div>
           <div
-            class="a"
-            data-qa="pnx-metadata-acq-framework-name"
+            class="row mt-2 pt-2 border-top"
+            *ngIf="stats.nb_observations_synthese > 0 || stats.nb_observations_habitats > 0"
           >
-            <b>Nom :</b>
-            {{ af?.acquisition_framework_name }}
-          </div>
-          <div class="a">
-            <b>Identifiant SINP du cadre d'acquisition :</b>
-            {{ af?.unique_acquisition_framework_id }}
-          </div>
-          <div
-            class="a"
-            data-qa="pnx-metadata-acq-framework-id"
-          >
-            <b>Identifiant GeoNature du cadre d'acquisition :</b>
-            {{ af?.id_acquisition_framework }}
-          </div>
-
-          <br />
-
-          <div class="b">Description</div>
-          <div class="a">
-            <b>Description :</b>
-            {{ af?.acquisition_framework_desc }}
-          </div>
-          <div class="a">
-            <b>Est un méta-cadre :</b>
-            {{ af?.is_parent ? 'Oui' : 'Non' }}
-          </div>
-          <div
-            class="a"
-            *ngIf="!af?.is_parent"
-          >
-            Identifiant du méta-cadre : {{ af?.acquisition_framework_parent_id }}
-          </div>
-          <br />
-
-          <div class="b">Dates</div>
-          <div class="a">
-            <b>Date de lancement du cadre d'acquisition :</b>
-            {{ af?.acquisition_framework_start_date }}
-          </div>
-          <div class="a">
-            <b>Date de clôture du cadre d'acquisition :</b>
-            {{ af?.acquisition_framework_end_date }}
-          </div>
-          <br />
-
-          <div *ngIf="af?.cor_objectifs">
-            <div class="b">Objectifs</div>
             <div
-              *ngFor="let objectif of af?.cor_objectifs"
-              class="a"
+              [ngClass]="stats.nb_observations_habitats > 0 ? 'col-6 border-right' : 'col-12'"
+              class="text-center"
+              *ngIf="stats.nb_observations_synthese > 0"
             >
-              {{ objectif?.label_default }}
+              <small class="text-muted">Occurrence(s) de taxon(s)</small>
+              <div>{{ stats.nb_observations_synthese }}</div>
             </div>
-            <br />
+            <div
+              [ngClass]="stats.nb_observations_synthese > 0 ? 'col-6' : 'col-12'"
+              class="text-center"
+              *ngIf="stats.nb_observations_habitats > 0"
+            >
+              <small class="text-muted">Occurrence(s) d'habitat(s)</small>
+              <div>{{ stats.nb_observations_habitats }}</div>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div>
-            <div class="b">Territoires concernés</div>
-            <ul class="a">
-              <li *ngFor="let ter of af?.cor_territories">- {{ ter.label_default }}</li>
-            </ul>
+      <!-- Nombre de taxons -->
+      <div
+        *ngIf="stats.nb_taxons"
+        class="col-3"
+      >
+        <div class="card">
+          <div class="card-body">
+            <div class="statistic-card">
+              <img src="./assets/images/Taxon_icon.svg" />
+              <div class="label">
+                <h5>Taxons</h5>
+              </div>
+              <div class="number-div">
+                <span class="number">{{ stats.nb_taxons }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nombre d'habitats -->
+      <div
+        *ngIf="stats.nb_observations_habitats"
+        class="col-3"
+      >
+        <div class="card">
+          <div class="card-body">
+            <div class="statistic-card">
+              <img src="./assets/images/Habitat_icon.svg" />
+              <div class="label">
+                <h5>Habitats</h5>
+              </div>
+              <div class="number-div">
+                <span class="number">{{ stats.nb_observations_habitats }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 col-md-8 col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h5>Fiche descriptive</h5>
+          </div>
+          <div class="card-body">
+            <div class="b">Identification</div>
+            <div
+              class="a"
+              data-qa="pnx-metadata-acq-framework-name"
+            >
+              <b>Nom :</b>
+              {{ af?.acquisition_framework_name }}
+            </div>
             <div class="a">
-              <b>Etendue territoriale :</b>
-              {{ af?.nomenclature_territorial_level?.label_default }}
+              <b>Identifiant SINP du cadre d'acquisition :</b>
+              {{ af?.unique_acquisition_framework_id }}
+            </div>
+            <div
+              class="a"
+              data-qa="pnx-metadata-acq-framework-id"
+            >
+              <b>Identifiant GeoNature du cadre d'acquisition :</b>
+              {{ af?.id_acquisition_framework }}
             </div>
 
             <br />
-          </div>
 
-          <div *ngIf="af?.target_description">
-            <div class="b">Cible taxonomique</div>
+            <div class="b">Description</div>
             <div class="a">
               <b>Description :</b>
-              {{ af?.target_description }}
+              {{ af?.acquisition_framework_desc }}
+            </div>
+            <div class="a">
+              <b>Est un méta-cadre :</b>
+              {{ af?.is_parent ? 'Oui' : 'Non' }}
+            </div>
+            <div
+              class="a"
+              *ngIf="!af?.is_parent"
+            >
+              Identifiant du méta-cadre : {{ af?.acquisition_framework_parent_id }}
             </div>
             <br />
-          </div>
 
-          <div *ngIf="af?.cor_af_actor">
-            <div class="b">Acteurs</div>
-            <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+            <div class="b">Dates</div>
+            <div class="a">
+              <b>Date de lancement du cadre d'acquisition :</b>
+              {{ af?.acquisition_framework_start_date }}
+            </div>
+            <div class="a">
+              <b>Date de clôture du cadre d'acquisition :</b>
+              {{ af?.acquisition_framework_end_date }}
+            </div>
+            <br />
+
+            <div *ngIf="af?.cor_objectifs">
+              <div class="b">Objectifs</div>
               <div
+                *ngFor="let objectif of af?.cor_objectifs"
                 class="a"
-                *ngFor="let actor of af?.cor_af_actor"
               >
-                <div>
-                  <b>{{ actor?.nomenclature_actor_role?.mnemonique }} :</b>
-                  {{ actor?.organism?.nom_organisme }}
-                  <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet">-</span>
-                  {{ actor?.role?.nom_complet }}
+                {{ objectif?.label_default }}
+              </div>
+              <br />
+            </div>
+
+            <div>
+              <div class="b">Territoires concernés</div>
+              <ul class="a">
+                <li *ngFor="let ter of af?.cor_territories">- {{ ter.label_default }}</li>
+              </ul>
+              <div class="a">
+                <b>Etendue territoriale :</b>
+                {{ af?.nomenclature_territorial_level?.label_default }}
+              </div>
+
+              <br />
+            </div>
+
+            <div *ngIf="af?.target_description">
+              <div class="b">Cible taxonomique</div>
+              <div class="a">
+                <b>Description :</b>
+                {{ af?.target_description }}
+              </div>
+              <br />
+            </div>
+
+            <div *ngIf="af?.cor_af_actor">
+              <div class="b">Acteurs</div>
+              <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+                <div
+                  class="a"
+                  *ngFor="let actor of af?.cor_af_actor"
+                >
+                  <div>
+                    <b>{{ actor?.nomenclature_actor_role?.mnemonique }} :</b>
+                    {{ actor?.organism?.nom_organisme }}
+                    <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet">
+                      -
+                    </span>
+                    {{ actor?.role?.nom_complet }}
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #elifNoActor>
+                <div class="a alert-actor">
+                  <mat-icon>report</mat-icon>
+                  <span>Aucun acteur renseigné</span>
+                </div>
+              </ng-template>
+              <br />
+            </div>
+
+            <div class="b">Créateur</div>
+
+            <div class="a">
+              <b>Créateur du cadre d'acquisition :</b>
+              {{ af?.creator?.nom_complet || 'Non renseigné' }}
+            </div>
+
+            <br />
+
+            <div class="b">Type de financement :</div>
+
+            <div class="a">
+              <b>Financement :</b>
+              {{ af?.nomenclature_financing_type?.label_default }}
+            </div>
+
+            <br />
+
+            <div *ngIf="af?.keywords">
+              <div class="b">Mots-clés</div>
+              <div class="a">{{ af?.keywords }}</div>
+              <br />
+            </div>
+
+            <div *ngIf="af?.bibliographical_references">
+              <div class="b">Référence bibliographiques</div>
+              <ul class="a">
+                <li *ngFor="let ref of af?.bibliographical_references">
+                  -
+                  <b>Url :</b>
+                  <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
+                  <b>rérérence :</b>
+                  {{ ref.publication_reference }}
+                </li>
+              </ul>
+              <div class="a">{{ af?.keywords }}</div>
+              <br />
+            </div>
+
+            <!--Champs additionnels-->
+            <div
+              class="b"
+              *ngIf="additionalFields"
+            >
+              {{ 'MetaData.AcquisitionFrameworkCard.AdditionalInformation' | translate }}
+            </div>
+            <ng-container *ngFor="let additionalField of additionalFields">
+              <div *ngIf="additionalField.type_widget != 'html'">
+                <div
+                  class="a"
+                  [attr.data-qa]="'pnx-metadata-additional-field-' + additionalField.attribut_name"
+                >
+                  <b>{{ additionalField.attribut_label }} :</b>
+                  {{ af?.additional_data[additionalField.attribut_name] }}
                 </div>
               </div>
             </ng-container>
-            <ng-template #elifNoActor>
-              <div class="a alert-actor">
-                <mat-icon>report</mat-icon>
-                <span>Aucun acteur renseigné</span>
-              </div>
-            </ng-template>
-            <br />
           </div>
+        </div>
+      </div>
 
-          <div class="b">Créateur</div>
-
-          <div class="a">
-            <b>Créateur du cadre d'acquisition :</b>
-            {{ af?.creator?.nom_complet || 'Non renseigné' }}
-          </div>
-
-          <br />
-
-          <div class="b">Type de financement :</div>
-
-          <div class="a">
-            <b>Financement :</b>
-            {{ af?.nomenclature_financing_type?.label_default }}
-          </div>
-
-          <br />
-
-          <div *ngIf="af?.keywords">
-            <div class="b">Mots-clés</div>
-            <div class="a">{{ af?.keywords }}</div>
-            <br />
-          </div>
-
-          <div *ngIf="af?.bibliographical_references">
-            <div class="b">Référence bibliographiques</div>
-            <ul class="a">
-              <li *ngFor="let ref of af?.bibliographical_references">
-                -
-                <b>Url :</b>
-                <a [href]="ref.publication_url">{{ ref.publication_url }}</a>
-                <b>rérérence :</b>
-                {{ ref.publication_reference }}
-              </li>
-            </ul>
-            <div class="a">{{ af?.keywords }}</div>
-            <br />
-          </div>
-
-          <!--Champs additionnels-->
-          <div
-            class="b"
-            *ngIf="additionalFields"
-          >
-            {{ 'MetaData.AcquisitionFrameworkCard.AdditionalInformation' | translate }}
-          </div>
-          <ng-container *ngFor="let additionalField of additionalFields">
-            <div *ngIf="additionalField.type_widget != 'html'">
-              <div
-                class="a"
-                [attr.data-qa]="'pnx-metadata-additional-field-' + additionalField.attribut_name"
+      <div class="col-xs-6 col-sm-4">
+        <!-- BBOX -->
+        <div
+          *ngIf="bbox"
+          class="card"
+        >
+          <div class="card-header">
+            <h5>Zone géographique</h5>
+            <div class="card-body">
+              <pnx-map
+                height="40vh"
+                searchBar="false"
               >
-                <b>{{ additionalField.attribut_label }} :</b>
-                {{ af?.additional_data[additionalField.attribut_name] }}
-              </div>
+                <pnx-geojson
+                  [geojson]="bbox"
+                  [zoomOnFirstTime]="true"
+                ></pnx-geojson>
+              </pnx-map>
             </div>
-          </ng-container>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="col-xs-6 col-sm-4">
-      <!-- BBOX -->
-      <div
-        *ngIf="bbox"
-        class="card"
-      >
-        <div class="card-header">
-          <h5>Zone géographique</h5>
+        <!-- PieChart -->
+        <div
+          *ngIf="this.pieChartLabels.length"
+          class="card"
+        >
+          <div class="card-header">
+            <h5>Répartition des espèces</h5>
+          </div>
           <div class="card-body">
-            <pnx-map
-              height="40vh"
-              searchBar="false"
-            >
-              <pnx-geojson
-                [geojson]="bbox"
-                [zoomOnFirstTime]="true"
-              ></pnx-geojson>
-            </pnx-map>
+            <div style="display: block">
+              <canvas
+                baseChart
+                *ngIf="pieChartData[0].data.length"
+                [options]="pieChartOptions"
+                [datasets]="pieChartData"
+                [labels]="pieChartLabels"
+                [type]="pieChartType"
+                [colors]="pieChartColors"
+                [plugins]="pieChartOptions.plugins"
+                padding="20px"
+              ></canvas>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- PieChart -->
-      <div
-        *ngIf="this.pieChartLabels.length"
-        class="card"
-      >
-        <div class="card-header">
-          <h5>Répartition des espèces</h5>
-        </div>
-        <div class="card-body">
-          <div style="display: block">
-            <canvas
-              baseChart
-              *ngIf="pieChartData[0].data.length"
-              [options]="pieChartOptions"
-              [datasets]="pieChartData"
-              [labels]="pieChartLabels"
-              [type]="pieChartType"
-              [colors]="pieChartColors"
-              [plugins]="pieChartOptions.plugins"
-              padding="20px"
-            ></canvas>
+        <div
+          *ngIf="stats && stats.nb_dataset"
+          class="card"
+        >
+          <div class="card-header">
+            <h5>Jeux de données associés</h5>
           </div>
-        </div>
-      </div>
-
-      <div
-        *ngIf="stats && stats.nb_dataset"
-        class="card"
-      >
-        <div class="card-header">
-          <h5>Jeux de données associés</h5>
-        </div>
-        <div class="card-body">
-          <table>
-            <tr *ngFor="let dataset of af?.datasets">
-              <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
-                <img
-                  width="60"
-                  *ngSwitchCase="'1'"
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchCase="'2'"
-                  src="./assets/images/Habitat_icon_vert.svg"
-                  alt=""
-                />
-                <img
-                  width="60"
-                  *ngSwitchDefault
-                  src="./assets/images/Taxon_icon_vert.svg"
-                  alt=""
-                />
-              </td>
-              <td>
-                <a
-                  [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
-                  style="color: black"
-                >
-                  {{ dataset.dataset_name }}
-                </a>
-                <div>
-                  <small>{{ dataset.unique_dataset_id }}</small>
-                </div>
-              </td>
-            </tr>
-          </table>
+          <div class="card-body">
+            <table>
+              <tr *ngFor="let dataset of af?.datasets">
+                <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
+                  <img
+                    width="60"
+                    *ngSwitchCase="'1'"
+                    src="./assets/images/Taxon_icon_vert.svg"
+                    alt=""
+                  />
+                  <img
+                    width="60"
+                    *ngSwitchCase="'2'"
+                    src="./assets/images/Habitat_icon_vert.svg"
+                    alt=""
+                  />
+                  <img
+                    width="60"
+                    *ngSwitchDefault
+                    src="./assets/images/Taxon_icon_vert.svg"
+                    alt=""
+                  />
+                </td>
+                <td>
+                  <a
+                    [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
+                    style="color: black"
+                  >
+                    {{ dataset.dataset_name }}
+                  </a>
+                  <div>
+                    <small>{{ dataset.unique_dataset_id }}</small>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>

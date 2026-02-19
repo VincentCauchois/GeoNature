@@ -119,7 +119,7 @@ def get_datasets():
 
     for item_nb_observations in [
         "nb_observations",
-        "synthese_records_count",
+        "nb_observations_synthese",
         "nb_observations_habitats",
     ]:
         if params.get(item_nb_observations, type=int, default=0):
@@ -620,9 +620,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
         .where(Synthese.id_dataset.in_(dataset_ids))
     )
     nb_taxons = db.session.scalar(query.distinct())
-    nb_observations = db.session.scalar(query)
+    nb_observations_synthese = db.session.scalar(query)
 
-    nb_habitat = 0
+    nb_observations_habitats = 0
 
     # Check if pr_occhab exist
     check_schema_query = (
@@ -638,13 +638,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
             + ")"
         )
 
-        nb_habitat = db.engine.execute(text(query)).first()[0]
+        nb_observations_habitats = db.engine.execute(text(query)).first()[0]
 
     acquisition_framework["stats"] = {
         "nb_data": nb_data,
         "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
+        "nb_observations_synthese": nb_observations_synthese,
+        "nb_observations_habitats": nb_observations_habitats,
     }
 
     if request.is_json and request.json is not None:
@@ -895,27 +895,73 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         )
     ).scalar_one()
 
-    nb_observations = db.session.execute(
+    nb_observations_synthese = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
         .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
     ).scalar_one()
 
-    nb_habitats = 0
+    nb_observations_habitats = 0
 
     if "OCCHAB" in config and nb_datasets > 0:
-        nb_habitats = db.session.execute(
+        nb_observations_habitats = db.session.execute(
             select(func.count("*"))
             .select_from(OccurenceHabitat)
             .join(Station)
             .where(Station.id_dataset.in_(dataset_ids))
         ).scalar_one()
 
+    nb_observations = nb_observations_synthese + nb_observations_habitats
+
     return dict(
         nb_dataset=nb_datasets,
         nb_taxons=nb_taxons,
         nb_observations=nb_observations,
-        nb_habitats=nb_habitats,
+        nb_observations_synthese=nb_observations_synthese,
+        nb_observations_habitats=nb_observations_habitats,
+    )
+
+
+@routes.route("/dataset/<id_dataset>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_dataset_stats(id_dataset):
+    """
+    Get stats from one DS
+    .. :quickref: Metadata;
+    :param id_dataset: the ID of the dataset
+    :param type: int
+    """
+    # TODO verify for the ID provided !
+    # ...
+
+    nb_taxons = db.session.execute(
+        select(func.count(func.distinct(Synthese.cd_nom))).where(Synthese.id_dataset == id_dataset)
+    ).scalar_one()
+
+    nb_observations_synthese = db.session.execute(
+        select(func.count("*"))
+        .select_from(Synthese)
+        .where(Synthese.dataset.has(TDatasets.id_dataset == id_dataset))
+    ).scalar_one()
+
+    nb_observations_habitats = 0
+
+    if "OCCHAB" in config:
+        nb_observations_habitats = db.session.execute(
+            select(func.count("*"))
+            .select_from(OccurenceHabitat)
+            .join(Station)
+            .where(Station.id_dataset == id_dataset)
+        ).scalar_one()
+
+    nb_observations = nb_observations_synthese + nb_observations_habitats
+
+    return dict(
+        nb_taxons=nb_taxons,
+        nb_observations=nb_observations,
+        nb_observations_synthese=nb_observations_synthese,
+        nb_observations_habitats=nb_observations_habitats,
     )
 
 
@@ -991,7 +1037,7 @@ def publish_acquisition_framework(af_id):
         .select_from(TAcquisitionFramework)
         .where(
             TAcquisitionFramework.id_acquisition_framework == af_id,
-            TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
+            TAcquisitionFramework.datasets.any(TDatasets.nb_observations > 0),
         )
     ).scalar_one()
 
