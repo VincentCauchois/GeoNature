@@ -880,8 +880,8 @@ request_nb_obs_synthese = (
     .where(Synthese.id_dataset == TDatasets.id_dataset)
     .scalar_subquery()
 )
-TDatasets.synthese_records_count = column_property(
-    request_nb_obs_synthese.label("synthese_records_count"),
+TDatasets.nb_observations_synthese = column_property(
+    request_nb_obs_synthese.label("nb_observations_synthese"),
     deferred=True,
 )
 request_nb_observations = request_nb_obs_synthese
