@@ -5,7 +5,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
 /**
- *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acqusitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
+ *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des cadres d'acquisition sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_acquisitions_framework`` et ``gn_meta.cor_acquisition_framework_actor``)
  * @example
  * <pnx-acquisition-frameworks
  * [multiSelect]='true'

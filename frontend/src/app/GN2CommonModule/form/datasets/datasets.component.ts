@@ -52,7 +52,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    */
   @Input() moduleCode: string;
   /**
-   * Si on veux uniquement les JDD surlequels l'utilisateur a des droits de création
+   * Si on veut uniquement les JDD sur lesquels l'utilisateur a des droits de création
    * fournir le code du module
    */
   @Input() creatableInModule: string;

@@ -142,9 +142,9 @@ export class DataFormService {
     return this._http.get<any>(`${this.config.API_ENDPOINT}/users/menu_from_code/${codeList}`);
   }
 
-  autocompleteTaxon(api_endpoint: string, searh_name: string, params?: { [key: string]: string }) {
+  autocompleteTaxon(api_endpoint: string, search_name: string, params?: { [key: string]: string }) {
     let queryString: HttpParams = new HttpParams();
-    queryString = queryString.set('search_name', searh_name);
+    queryString = queryString.set('search_name', search_name);
     for (let key in params) {
       if (params[key]) {
         queryString = queryString.set(key, params[key]);
