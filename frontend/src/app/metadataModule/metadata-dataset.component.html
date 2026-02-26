@@ -74,9 +74,7 @@
 </td>
 <td [attr.data-qa]="'pnx-metadata-jdd-nb-obs-' + dataset.unique_dataset_id">
   {{ dataset?.nb_observations }}
-  <i
-    class="fa fa-line-chart"
-    aria-hidden="true"
+  <mat-icon
     *ngIf="dataset.nb_observations"
     [matTooltip]="
       (dataset?.nb_observations_synthese
@@ -91,7 +89,9 @@
           dataset?.nb_observations_habitats
         : '')
     "
-  ></i>
+  >
+    more_horiz
+  </mat-icon>
 </td>
 <td>
   <a
