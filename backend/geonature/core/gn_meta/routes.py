@@ -118,9 +118,7 @@ def get_datasets():
     ]
 
     for item_nb_observations in [
-        "nb_observations",
         "synthese_records_count",
-        "nb_observations_habitats",
     ]:
         if params.get(item_nb_observations, type=int, default=0):
             query = query.options(undefer(getattr(TDatasets, item_nb_observations)))
@@ -898,7 +896,9 @@ def get_acquisition_framework_stats(id_acquisition_framework):
     nb_observations = db.session.execute(
         select(func.count("*"))
         .select_from(Synthese)
-        .where(Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework))
+        .where(
+            Synthese.dataset.has(TDatasets.id_acquisition_framework == id_acquisition_framework)
+        )
     ).scalar_one()
 
     nb_habitats = 0
@@ -916,6 +916,51 @@ def get_acquisition_framework_stats(id_acquisition_framework):
         nb_taxons=nb_taxons,
         nb_observations=nb_observations,
         nb_habitats=nb_habitats,
+    )
+
+
+@routes.route("/dataset/<id_dataset>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="METADATA")
+@json_resp
+def get_dataset_stats(id_dataset):
+    """
+    Get stats from one DS
+    .. :quickref: Metadata;
+    :param id_dataset: the id_dataset
+    :param type: int
+    """
+    dict_nb_obs = {}
+
+    nb_obs_synthese = db.session.execute(
+        select(func.count(Synthese.id_synthese)).where(Synthese.id_dataset == id_dataset)
+    ).scalar_one()
+
+    dict_nb_obs["SYNTHESE"] = nb_obs_synthese
+
+    from geonature.utils.module import is_module_installed, iter_modules_dist
+
+    for module_dist in iter_modules_dist():
+        module_name = module_dist.name
+        is_current_module_installed = is_module_installed(module_name)
+        if is_current_module_installed:
+            module_statistics = None
+            try:
+                module_statistics = module_dist.entry_points["statistics"]
+            except KeyError:
+                pass
+            if module_statistics:
+                print(f"\n\nTEST: {module_dist.entry_points}\n\n")
+                from gn_module_occhab import statistics
+
+                nb_observations = statistics.get_dataset_nb_observations(id_dataset)
+                module_code = module_dist.name
+                dict_nb_obs[module_code] = nb_observations
+
+    total_nb_obs = sum(dict_nb_obs.values())
+
+    return dict(
+        dict_nb_obs=dict_nb_obs,
+        total_nb_obs=total_nb_obs,
     )
 
 

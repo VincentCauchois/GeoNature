@@ -12,7 +12,7 @@ def get_dataset_nb_observations(id_dataset):
     Retourne le nombre d'occurrences d'habitats pour un JDD donné.
     Utilisé pour alimenter la colonne "Nombre de données" dans les listes JDD / CA.
     """
-    return (
+    return db.session.scalar(
         select(func.count(OccurenceHabitat.id_habitat))
         .join(OccurenceHabitat.station)
         .where(Station.id_dataset == id_dataset)
