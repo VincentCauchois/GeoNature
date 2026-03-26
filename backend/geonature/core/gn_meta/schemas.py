@@ -50,6 +50,9 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
 
     __module_code__ = "METADATA"
 
+    nb_observations_habitats = fields.Number()
+    nb_observations = fields.Number()
+
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
     cor_dataset_actor = MA.Nested(DatasetActorSchema, many=True, unknown=EXCLUDE)
