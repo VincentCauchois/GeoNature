@@ -937,11 +937,11 @@ def get_dataset_stats(id_dataset):
 
     dict_nb_obs["SYNTHESE"] = nb_obs_synthese
 
-    from geonature.utils.module import is_module_installed, iter_modules_dist
+    from geonature.utils.module import iter_modules_dist
 
     for module_dist in iter_modules_dist():
         module_name = module_dist.name
-        is_current_module_installed = is_module_installed(module_name)
+        is_current_module_installed = current_app.dict_modules_is_installed[module_name]
         if is_current_module_installed:
             module_statistics = None
             try:
@@ -949,11 +949,9 @@ def get_dataset_stats(id_dataset):
             except KeyError:
                 pass
             if module_statistics:
-                print(f"\n\nTEST: {module_dist.entry_points}\n\n")
-                from gn_module_occhab import statistics
-
+                statistics = __import__(module_name + ".statistics", fromlist=["statistics"])
                 nb_observations = statistics.get_dataset_nb_observations(id_dataset)
-                module_code = module_dist.name
+                module_code = module_dist.entry_points["code"].load()
                 dict_nb_obs[module_code] = nb_observations
 
     total_nb_obs = sum(dict_nb_obs.values())
